@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
+import { Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { collection, doc, setDoc } from 'firebase/firestore'
+import { FirebaseError } from 'firebase/app'
+
+import { firebaseAuth, database } from './../../services/firebase'
 
 import { Background } from './../../components/Background'
 import { AuthRoutesStackParamList } from '../../routes/auth.routes'
@@ -18,6 +24,33 @@ export const SignUp = () => {
     navigate('SignIn')
   }
 
+  const handleSubmit = async () => {
+    try {
+      if (name === '' || email === '' || password === '') {
+        Alert.alert('Opsssss', 'Todos os campos devem ser preenchidos')
+        return
+      }
+
+      const { user } = await createUserWithEmailAndPassword(firebaseAuth, email, password)
+      const newUser = {
+        name,
+        email
+      }
+
+      const userRef = collection(database, 'users')
+      await setDoc(doc(userRef, user.uid), newUser)
+      setName('')
+      setEmail('')
+      setPassword('')
+      navigate('SignIn')
+    } catch (err) {
+      const error = err as FirebaseError
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert('Opsssss', 'Esse usuário já existe na nossa base de dados')
+      }
+    }
+  }
+
   return (
     <Background>
       <Container>
@@ -26,7 +59,7 @@ export const SignUp = () => {
           <InputArea>
             <Input
               placeholder="Nome"
-              autoCapitalize="none"
+              autoCapitalize="words"
               autoCorrect={ false }
               value={name}
               onChangeText={setName}
@@ -52,7 +85,7 @@ export const SignUp = () => {
             />
           </InputArea>
 
-          <SubmitButton>
+          <SubmitButton onPress={ handleSubmit }>
             <SubmitButtonText>Cadastrar</SubmitButtonText>
           </SubmitButton>
 

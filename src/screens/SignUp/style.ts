@@ -1,4 +1,3 @@
-import { RectButton } from 'react-native-gesture-handler'
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
@@ -35,7 +34,7 @@ export const Input = styled.TextInput.attrs({
   border-radius: 8px;
 `
 
-export const SubmitButton = styled(RectButton)`
+export const SubmitButton = styled.TouchableOpacity`
   align-self: stretch;
   align-items: center;
   justify-content: center;
