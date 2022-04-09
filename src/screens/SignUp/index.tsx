@@ -34,7 +34,8 @@ export const SignUp = () => {
       const { user } = await createUserWithEmailAndPassword(firebaseAuth, email, password)
       const newUser = {
         name,
-        email
+        email,
+        balance: 0
       }
 
       const userRef = collection(database, 'users')
@@ -71,6 +72,7 @@ export const SignUp = () => {
               placeholder="E-mail"
               autoCapitalize="none"
               autoCorrect={ false }
+              keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
             />
