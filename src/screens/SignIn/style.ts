@@ -31,7 +31,7 @@ export const Input = styled.TextInput.attrs({
   border-radius: 8px;
 `
 
-export const SubmitButton = styled(RectButton)`
+export const SubmitButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   height: 45px;

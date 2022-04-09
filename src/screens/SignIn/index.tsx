@@ -1,7 +1,9 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
-import { Platform } from 'react-native'
+import { Alert, ActivityIndicator, Platform } from 'react-native'
+
+import { useAuth } from '../../hooks/useAuth'
 
 import { AuthRoutesStackParamList } from '../../routes/auth.routes'
 import logoImg from './../../assets/logo/Logo.png'
@@ -14,9 +16,18 @@ export const SignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { navigate } = useNavigation<SignInScreenProps>()
+  const { isLoading, signIn } = useAuth()
 
   const handleNavigationSignUp = () => {
     navigate('SignUp')
+  }
+
+  const handleSignIn = async () => {
+    if (email === '' || password === '') {
+      Alert.alert('Opsssss', 'Todos os campos devem ser preenchidos')
+      return
+    }
+    await signIn(email, password)
   }
 
   return (
@@ -31,6 +42,7 @@ export const SignIn = () => {
             placeholder="E-mail"
             autoCapitalize="none"
             autoCorrect={ false }
+            keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
           />
@@ -45,12 +57,15 @@ export const SignIn = () => {
           />
         </InputArea>
 
-        <SubmitButton>
-          <SubmitButtonText>Entrar</SubmitButtonText>
+        <SubmitButton onPress={ handleSignIn }>
+          { isLoading
+            ? <ActivityIndicator size={'large'} color="#FFF"/>
+            : <SubmitButtonText>Entrar</SubmitButtonText>
+          }
         </SubmitButton>
 
         <Link onPress={ handleNavigationSignUp }>
-          <LinkText>Criar uma conta!</LinkText>
+          <LinkText> Criar uma conta!</LinkText>
         </Link>
       </Container>
     </Background>
