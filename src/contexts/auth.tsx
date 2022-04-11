@@ -1,6 +1,7 @@
-import React, { createContext, ReactNode, useState } from 'react'
+import React, { createContext, ReactNode, useEffect, useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { firebaseAuth, database } from './../services/firebase'
 import { Alert } from 'react-native'
@@ -30,6 +31,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  useEffect(() => {
+    const userLoad = async () => {
+      const userStorage = await AsyncStorage.getItem('@finance:user')
+
+      if (userStorage) {
+        setUser(JSON.parse(userStorage))
+      }
+    }
+
+    userLoad()
+  }, [])
+
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true)
@@ -50,6 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         balance
       }
 
+      await AsyncStorage.setItem('@finance:user', JSON.stringify(userData))
       setUser(userData)
       setIsLoading(false)
     } catch (err) {
