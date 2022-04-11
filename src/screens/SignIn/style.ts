@@ -1,5 +1,5 @@
-import { RectButton } from 'react-native-gesture-handler'
 import styled from 'styled-components/native'
+import { COLORS, FONTS } from './../../themes'
 
 export const Container = styled.KeyboardAvoidingView`
   flex: 1;
@@ -22,7 +22,8 @@ export const Input = styled.TextInput.attrs({
   placeholderTextColor: '#999'
 })`
   font-size: 18px;
-  color: #FFF;
+  font-family: ${FONTS.NORMAL};
+  color: ${COLORS.WHITE};
   height: 45px;
   width: 100%;
   padding: 10px;
@@ -37,22 +38,22 @@ export const SubmitButton = styled.TouchableOpacity`
   height: 45px;
   width: 100%;
   margin-bottom: 15px;
-  background-color: #00B94A;
+  background-color: ${COLORS.SECONDARY};
   border-radius: 8px;
 `
 
 export const SubmitButtonText = styled.Text`
   font-size: 20px;
-  font-weight: bold;
-  color: #FFF;
+  font-family: ${FONTS.BOLD};
+  color: ${COLORS.WHITE};
 `
 
 export const Link = styled.TouchableOpacity``
 
 export const LinkText = styled.Text`
   font-size: 20px;
-  font-weight: bold;
-  color: #00B94A;
+  font-family: ${FONTS.BOLD};
+  color: ${COLORS.SECONDARY};
   margin-top: 15px;
   margin-bottom: 15px;
 `
