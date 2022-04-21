@@ -6,7 +6,7 @@ import { ButtonHamburger } from '../../components/ButtonHamburger'
 import { Historic } from '../../components/Historic'
 import { Container, UserInfo, Name, Balance, Content, Title, ListMoves } from './style'
 
-type DataProps = {
+export type DataProps = {
   id: string
   type: string
   value: number
@@ -40,8 +40,8 @@ export const Home = () => {
 
           <ListMoves
             data={data}
-            keyExtractor={(item: any) => item.id}
-            renderItem={({ item }: any) => {
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
               return (
                 <Historic key={String(item.id)} data={item}/>
               )

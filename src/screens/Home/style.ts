@@ -1,4 +1,7 @@
 import styled from 'styled-components/native'
+import { FlatList, FlatListProps } from 'react-native'
+
+import { DataProps } from './'
 import { COLORS, FONTS } from '../../themes'
 
 export const Container = styled.View`
@@ -36,7 +39,7 @@ export const Title = styled.Text`
   margin-top: 5px;
 `
 
-export const ListMoves = styled.FlatList.attrs({
+export const ListMoves = styled(FlatList as new (props: FlatListProps<DataProps>) => FlatList<DataProps>).attrs({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
     paddingTop: 15,
