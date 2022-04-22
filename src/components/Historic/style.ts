@@ -27,7 +27,7 @@ export const IconView = styled.View`
 export const TypeText = styled.Text<TypeTextProps>`
   font-size: 16px;
   font-family: ${FONTS.NORMAL};
-  color: ${({ type }) => type === 'despesa' ? COLORS.RED : COLORS.SECONDARY};
+  color: ${({ type }) => type === 'expense' ? COLORS.RED : COLORS.SECONDARY};
 `
 
 export const ValueText = styled.Text`

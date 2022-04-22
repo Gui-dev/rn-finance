@@ -24,9 +24,9 @@ export const Historic = ({ data }: HistoricProps) => {
         <Type>
           <IconView>
             <Feather
-              name={ type === 'despesa' ? 'arrow-down' : 'arrow-up'}
+              name={ type === 'expense' ? 'arrow-down' : 'arrow-up'}
               size={20}
-              color={type === 'despesa' ? COLORS.RED : COLORS.SECONDARY}/>
+              color={type === 'expense' ? COLORS.RED : COLORS.SECONDARY}/>
             <TypeText type={type}>{type}</TypeText>
           </IconView>
         </Type>
