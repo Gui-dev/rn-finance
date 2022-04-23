@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 
 import { database } from './../../services/firebase'
@@ -24,53 +25,57 @@ export const Home = () => {
   const [data, setData] = useState<DataProps[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const getBalance = async () => {
-      try {
-        const userRef = doc(database, 'users', String(user?.id))
-        const docSnap = await getDoc(userRef)
+  useFocusEffect(
+    useCallback(() => {
+      const getBalance = async () => {
+        try {
+          const userRef = doc(database, 'users', String(user?.id))
+          const docSnap = await getDoc(userRef)
 
-        if (docSnap.exists()) {
-          const user = docSnap.data()
-          const balanceFormatted = coinBRL(user.balance)
-          setBalance(balanceFormatted)
-        }
-      } catch (error) {
-        console.log('BALANCE', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    getBalance()
-  }, [user?.id])
-
-  useEffect(() => {
-    const loadMovements = async () => {
-      try {
-        const movementsRef = collection(database, 'movements')
-        const queryResponse = query(movementsRef, where('id', '==', user?.id))
-        const response = await getDocs(queryResponse)
-        setData([])
-        response.forEach(doc => {
-          if (doc.exists()) {
-            const movements = doc.data()
-            const eachMovements = {
-              id: doc.id,
-              type: movements.type,
-              value: movements.value
-            }
-            setData(prevData => [...prevData, eachMovements].reverse())
+          if (docSnap.exists()) {
+            const user = docSnap.data()
+            const balanceFormatted = coinBRL(user.balance)
+            setBalance(balanceFormatted)
           }
-        })
-      } catch (error) {
-        console.log('MOVES: ', error)
-      } finally {
-        setLoading(false)
+        } catch (error) {
+          console.log('BALANCE', error)
+        } finally {
+          setLoading(false)
+        }
       }
-    }
+      getBalance()
+    }, [user?.id])
+  )
 
-    loadMovements()
-  }, [user?.id])
+  useFocusEffect(
+    useCallback(() => {
+      const loadMovements = async () => {
+        try {
+          const movementsRef = collection(database, 'movements')
+          const queryResponse = query(movementsRef, where('id', '==', user?.id))
+          const response = await getDocs(queryResponse)
+          setData([])
+          response.forEach(doc => {
+            if (doc.exists()) {
+              const movements = doc.data()
+              const eachMovements = {
+                id: doc.id,
+                type: movements.type,
+                value: movements.value
+              }
+              setData(prevData => [...prevData, eachMovements].reverse())
+            }
+          })
+        } catch (error) {
+          console.log('MOVES: ', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      loadMovements()
+    }, [user?.id])
+  )
 
   return (
     <>
