@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, limit, query, where } from 'firebase/firestore'
 
 import { database } from './../../services/firebase'
 import { useAuth } from '../../hooks/useAuth'
@@ -52,7 +52,7 @@ export const Home = () => {
       const loadMovements = async () => {
         try {
           const movementsRef = collection(database, 'movements')
-          const queryResponse = query(movementsRef, where('id', '==', user?.id))
+          const queryResponse = query(movementsRef, where('id', '==', user?.id), limit(5))
           const response = await getDocs(queryResponse)
           setData([])
           response.forEach(doc => {
@@ -63,7 +63,7 @@ export const Home = () => {
                 type: movements.type,
                 value: movements.value
               }
-              setData(prevData => [...prevData, eachMovements].reverse())
+              setData(prevData => [...prevData, eachMovements])
             }
           })
         } catch (error) {
