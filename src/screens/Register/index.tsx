@@ -16,7 +16,7 @@ import { Container, Content, InputValue, SubmitButton, SubmitButtonText } from '
 
 type RegisterScreenNavigationProps = DrawerNavigationProp<AppRoutesParamList>
 
-type UserProps = {
+export type UserProps = {
   name: string
   email: string
   balance: number
