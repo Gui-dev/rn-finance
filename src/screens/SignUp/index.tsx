@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert } from 'react-native'
+import { ActivityIndicator, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
@@ -8,6 +8,7 @@ import { FirebaseError } from 'firebase/app'
 
 import { firebaseAuth, database } from './../../services/firebase'
 
+import { COLORS } from '../../themes'
 import { Background } from './../../components/Background'
 import { AuthRoutesStackParamList } from '../../routes/auth.routes'
 import { Container, Content, InputArea, Input, SubmitButton, SubmitButtonText, Link, LinkText } from './style'
@@ -18,6 +19,7 @@ export const SignUp = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const { navigate } = useNavigation<SignUpScreenProps>()
 
   const handleNavigationSignIn = () => {
@@ -30,7 +32,7 @@ export const SignUp = () => {
         Alert.alert('Opsssss', 'Todos os campos devem ser preenchidos')
         return
       }
-
+      setIsLoading(true)
       const { user } = await createUserWithEmailAndPassword(firebaseAuth, email, password)
       const newUser = {
         name,
@@ -49,6 +51,8 @@ export const SignUp = () => {
       if (error.code === 'auth/email-already-in-use') {
         Alert.alert('Opsssss', 'Esse usuário já existe na nossa base de dados')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -88,7 +92,11 @@ export const SignUp = () => {
           </InputArea>
 
           <SubmitButton onPress={ handleSubmit }>
-            <SubmitButtonText>Cadastrar</SubmitButtonText>
+            {
+              isLoading
+                ? <ActivityIndicator size="large" color={COLORS.WHITE}/>
+                : <SubmitButtonText>Cadastrar</SubmitButtonText>
+            }
           </SubmitButton>
 
           <Link onPress={handleNavigationSignIn}>
