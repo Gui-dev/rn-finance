@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { collection, doc, deleteDoc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore'
+import { Feather } from '@expo/vector-icons'
 
 import { database } from './../../services/firebase'
 import { useAuth } from '../../hooks/useAuth'
@@ -10,7 +11,7 @@ import { coinBRL } from './../../utils/coinBRL'
 import { Background } from '../../components/Background'
 import { ButtonHamburger } from '../../components/ButtonHamburger'
 import { Historic } from '../../components/Historic'
-import { Container, UserInfo, Name, Balance, Content, Title, ListMoves } from './style'
+import { Container, UserInfo, Name, Balance, Content, ContainerTitle, Title, ListMoves } from './style'
 
 import { HistoricItemProps } from './../../components/Historic'
 import { UserProps } from './../../screens/Register'
@@ -124,7 +125,7 @@ export const Home = () => {
     } finally {
       setLoading(false)
     }
-  }, [user?.id])
+  }, [user?.id, loadMovements])
 
   return (
     <>
@@ -146,7 +147,10 @@ export const Home = () => {
             </UserInfo>
 
             <Content>
-              <Title>Últimas movimentações</Title>
+              <ContainerTitle>
+                <Feather name="calendar" size={32} color="#FFF"/>
+                <Title>Últimas movimentações</Title>
+              </ContainerTitle>
 
               <ListMoves
                 data={data}

@@ -32,11 +32,17 @@ export const Content = styled.View`
   width: 100%;
 `
 
+export const ContainerTitle = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5px;
+`
+
 export const Title = styled.Text`
   font-size: 16px;
   font-family: ${FONTS.BOLD};
   color: ${COLORS.SECONDARY};
-  margin-top: 5px;
+  margin-left: 5px;
 `
 
 export const ListMoves = styled(FlatList as new (props: FlatListProps<DataProps>) => FlatList<DataProps>).attrs({
