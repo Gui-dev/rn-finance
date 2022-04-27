@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { collection, doc, deleteDoc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore'
@@ -28,60 +28,67 @@ export const Home = () => {
   const [data, setData] = useState<DataProps[]>([])
   const [loading, setLoading] = useState(true)
 
+  const getBalance = useCallback(async () => {
+    try {
+      const userRef = doc(database, 'users', String(user?.id))
+      const docSnap = await getDoc(userRef)
+
+      if (docSnap.exists()) {
+        const user = docSnap.data()
+        const balanceFormatted = coinBRL(user.balance)
+        setBalance(balanceFormatted)
+      }
+    } catch (error) {
+      console.log('BALANCE', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [user?.id])
+
+  const loadMovements = useCallback(async () => {
+    try {
+      const movementsRef = collection(database, 'movements')
+      const queryResponse = query(
+        movementsRef,
+        where('id', '==', user?.id),
+        limit(10)
+      )
+      const response = await getDocs(queryResponse)
+      setData([])
+      response.forEach(doc => {
+        if (doc.exists()) {
+          const movements = doc.data()
+          const eachMovements = {
+            id: doc.id,
+            type: movements.type,
+            value: movements.value
+          }
+          setData(prevData => [eachMovements, ...prevData].reverse())
+        }
+      })
+    } catch (error) {
+      console.log('MOVES: ', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [user?.id])
+
   useFocusEffect(
     useCallback(() => {
-      const getBalance = async () => {
-        try {
-          const userRef = doc(database, 'users', String(user?.id))
-          const docSnap = await getDoc(userRef)
-
-          if (docSnap.exists()) {
-            const user = docSnap.data()
-            const balanceFormatted = coinBRL(user.balance)
-            setBalance(balanceFormatted)
-          }
-        } catch (error) {
-          console.log('BALANCE', error)
-        } finally {
-          setLoading(false)
-        }
-      }
       getBalance()
-    }, [])
+      return () => {
+        setBalance('') // This worked for me
+      }
+    }, [getBalance])
   )
 
   useFocusEffect(
     useCallback(() => {
-      const loadMovements = async () => {
-        try {
-          const movementsRef = collection(database, 'movements')
-          const queryResponse = query(
-            movementsRef,
-            where('id', '==', user?.id),
-            limit(10)
-          )
-          const response = await getDocs(queryResponse)
-          setData([])
-          response.forEach(doc => {
-            if (doc.exists()) {
-              const movements = doc.data()
-              const eachMovements = {
-                id: doc.id,
-                type: movements.type,
-                value: movements.value
-              }
-              setData(prevData => [eachMovements, ...prevData].reverse())
-            }
-          })
-        } catch (error) {
-          console.log('MOVES: ', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-
       loadMovements()
-    }, [])
+      return () => {
+        setData([]) // This worked for me
+      }
+    }, [loadMovements])
   )
 
   const handleRemoveHistoric = (data: HistoricItemProps) => {
@@ -97,7 +104,7 @@ export const Home = () => {
     ])
   }
 
-  const handleRemoveItem = async (data : HistoricItemProps) => {
+  const handleRemoveItem = useCallback(async (data : HistoricItemProps) => {
     try {
       setLoading(true)
       const { id, type, value } = data
@@ -111,12 +118,13 @@ export const Home = () => {
       await updateDoc(userRef, {
         balance: type === 'recipe' ? userResponse.balance -= Number(value) : userResponse.balance += Number(value)
       })
+      loadMovements()
     } catch (error) {
       Alert.alert('Opsssss', 'Erro ao tentar remover esse item')
     } finally {
       setLoading(false)
     }
-  }
+  }, [user?.id])
 
   return (
     <>
