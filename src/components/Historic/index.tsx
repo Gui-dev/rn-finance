@@ -1,4 +1,5 @@
 import React from 'react'
+import { TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { coinBRL } from '../../utils/coinBRL'
@@ -6,32 +7,41 @@ import { coinBRL } from '../../utils/coinBRL'
 import { COLORS } from '../../themes'
 import { Container, Type, IconView, TypeText, ValueText } from './style'
 
-type HistoricProps = {
-  data: {
-    id: string,
-    type: string
-    value: number
-  }
+export type HistoricItemProps = {
+  id: string,
+  type: string
+  value: number
 }
 
-export const Historic = ({ data }: HistoricProps) => {
+type HistoricProps = {
+  data: HistoricItemProps
+  onHandleRemoveHistoric: (data: HistoricItemProps) => void
+}
+
+export const Historic = ({ data, onHandleRemoveHistoric }: HistoricProps) => {
   const { type, value } = data
 
   const valueFormatted = coinBRL(value)
 
-  return (
-    <Container>
-        <Type>
-          <IconView>
-            <Feather
-              name={ type === 'expense' ? 'arrow-down' : 'arrow-up'}
-              size={20}
-              color={type === 'expense' ? COLORS.RED : COLORS.SECONDARY}/>
-            <TypeText type={type}>{type}</TypeText>
-          </IconView>
-        </Type>
+  const handleRemoveHistoric = () => {
+    onHandleRemoveHistoric(data)
+  }
 
-        <ValueText>{valueFormatted}</ValueText>
-    </Container>
+  return (
+    <TouchableOpacity onLongPress={handleRemoveHistoric}>
+      <Container>
+          <Type>
+            <IconView>
+              <Feather
+                name={ type === 'expense' ? 'arrow-down' : 'arrow-up'}
+                size={20}
+                color={type === 'expense' ? COLORS.RED : COLORS.SECONDARY}/>
+              <TypeText type={type}>{type}</TypeText>
+            </IconView>
+          </Type>
+
+          <ValueText>{valueFormatted}</ValueText>
+      </Container>
+    </TouchableOpacity>
   )
 }
