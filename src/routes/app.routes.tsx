@@ -1,5 +1,5 @@
 import React from 'react'
-import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer'
 import { AntDesign } from '@expo/vector-icons'
 
 import { COLORS, FONTS } from './../themes'
@@ -7,6 +7,7 @@ import { COLORS, FONTS } from './../themes'
 import { Home } from '../screens/Home'
 import { Register } from '../screens/Register'
 import { Profile } from '../screens/Profile'
+import { CustomDrawerNavigation } from '../components/CustomDrawerNavigation'
 
 export type AppRoutesParamList = {
   Home: undefined
@@ -18,6 +19,8 @@ export const AppRoutes = () => {
   const { Navigator, Screen } = createDrawerNavigator()
   return (
     <Navigator
+      // @ts-ignore
+      drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerNavigation {...props}/>}
       screenOptions={{
         headerShown: false,
         drawerType: 'back',
