@@ -1,9 +1,9 @@
 <h1 align="center">
    <img
-        alt="Gameplay"
-        title="Gameplay"
-        src="./assets/adaptive-icon.png"
-        width="300"
+        alt="Finance"
+        title="Finance"
+        src="./src/assets/logo/Logo.png"
+        width="140"
     />
 </h1>
 
